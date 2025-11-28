@@ -31,14 +31,19 @@ namespace AxiomDrawApp.Views
 		/// Entità visualizzata
 		/// </summary>
 		public DrawingVisual Visual { get; private set; }
-		#endregion Properties
 
-		#region Constructors
+        public Point Position { get; internal set; }
+        public double Width { get; internal set; }
+        public double Height { get; internal set; }
+        public bool IsResizable { get; internal set; }
+        #endregion Properties
 
-		/// <summary>
-		/// Init class
-		/// </summary>
-		public GraphicElement(Entity3D entity, UIElement uIElement)
+        #region Constructors
+
+        /// <summary>
+        /// Init class
+        /// </summary>
+        public GraphicElement(Entity3D entity, UIElement uIElement)
 		{
 			CadEntity = entity;
 			UiEntity = uIElement;
@@ -75,6 +80,16 @@ namespace AxiomDrawApp.Views
 			maxItemX = _box.MaxPoint.X;
 			maxItemY = _box.MaxPoint.Y;
 		}
-		#endregion
-	}
+
+        internal void Traslate(double vectX, double vectY)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void ChangeSize(ArrowDirection arrowDirection, double verticalChange, double horizontalChange)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+    }
 }
