@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Shapes;
 
 namespace AxiomDrawApp.ViewModel
 {
@@ -65,9 +66,42 @@ namespace AxiomDrawApp.ViewModel
 
 		#region Methods
 
+		/// <summary>
+		/// Aggiunge una nuova forma, calcola anche l'id
+		/// </summary>
+		/// <param name="shape"></param>
 		public void AddShape(Shape2D shape)
 		{
+			CheckAndUpdateEntityId(shape);
 			_root.AddEntity(shape);
+			OnAddedShape?.Invoke(this, shape);
+		}
+
+		public void ChangeShape(Shape2D shape)
+		{
+			OnChangedShape?.Invoke(this, shape);
+		}
+
+		public void RemoveShape(Shape2D shape)
+		{
+			_root.Entities.Remove(shape.Id);
+			OnRemovedShape?.Invoke(this, shape);
+		}
+		#endregion
+
+		#region Private Methods
+
+		private void CheckAndUpdateEntityId(Entity3D entity)
+		{
+			if (string.IsNullOrEmpty(entity.Id))
+			{
+				entity.Id = "0";
+			}
+			int index = 0;
+			while (_root.Entities.ContainsKey(entity.Id))
+			{
+				entity.Id = (++index).ToString();
+			}
 		}
 		#endregion
 	}

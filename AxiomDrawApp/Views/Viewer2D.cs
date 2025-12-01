@@ -277,7 +277,7 @@ namespace AxiomDrawApp.Views
 			_fastCanvas.Clear();
 			if (newDoc != null)
 			{
-				_fastCanvas.SetElements(newDoc, newDoc.Root);
+				_fastCanvas.AddElements(newDoc, newDoc.Root);
 				newDoc.OnChangedShape += OldDoc_OnChangedShape;
 				newDoc.OnAddedShape += OldDoc_OnAddedShape;
 				newDoc.OnRemovedShape += OldDoc_OnRemovedShape;
@@ -286,14 +286,17 @@ namespace AxiomDrawApp.Views
 
 		private void OldDoc_OnRemovedShape(object? sender, Axiom.GeoShape.Entities.Entity3D e)
 		{
+			_fastCanvas.RemoveEntities([e]);
 		}
 
 		private void OldDoc_OnAddedShape(object? sender, Axiom.GeoShape.Entities.Entity3D e)
 		{
+			_fastCanvas.AddElements(sender as WpfDocument, [e]);
 		}
 
 		private void OldDoc_OnChangedShape(object? sender, Axiom.GeoShape.Entities.Entity3D e)
 		{
+			_fastCanvas.ChangedElements(sender as WpfDocument, [e]);
 		}
 		#endregion
 		#region Trasform

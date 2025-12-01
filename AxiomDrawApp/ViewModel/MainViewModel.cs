@@ -1,7 +1,10 @@
-﻿using Axiom.GeoShape.Shapes;
+﻿using Axiom.GeoMath;
+using Axiom.GeoShape.Shapes;
 using Axiom.WpfFrameworks;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -33,20 +36,23 @@ namespace AxiomDrawApp.ViewModel
 			set => SetProperty(ref _title, value);
 		}
 
+
 		/// <summary>
 		/// Lista di comandi
 		/// </summary>
-		public ObservableCollection<CommandViewModel> Commands { get; set; } = new();
+		public ObservableCollection<CommandCategoryViewModel> Commands { get; set; } = new();
 
 
 		/// <summary>
 		/// Documento
 		/// </summary>
 		private WpfDocument _document;
-		/// <summary>
-		/// Documento
-		/// </summary>
-		public WpfDocument Document
+        private WeakReferenceMessenger _messenger;
+
+        /// <summary>
+        /// Documento
+        /// </summary>
+        public WpfDocument Document
 		{
 			get => _document;
 			set => SetProperty(ref _document, value);
@@ -60,18 +66,35 @@ namespace AxiomDrawApp.ViewModel
 		/// </summary>
 		public MainViewModel()
 		{
+			_messenger = new WeakReferenceMessenger();
 			Title = "Cad 2D";
 			Document = new WpfDocument();
-			Commands.Add(new(null, "Rect", "", CreateRectangle));
-			CreateRectangle();
+			AddShapeCommands();
+			CreateRectangle(100, 50, 0);
+			CreateRectangle(100, 200, 45);
+		}
+
+        private void AddShapeCommands()
+        {
+			int angleTest = 0;
+
+			CommandCategoryViewModel category = new(_messenger, null, "Shape", null);
+			category.AddChild(new CommandViewModel(null, "Rect", "", () =>
+			{
+				CreateRectangle(10, 50, angleTest);
+				angleTest += 10;
+			}));
+			Commands.Add (category);
 		}
 
 		#endregion
 
 		#region Methods
-		private void CreateRectangle()
+		private void CreateRectangle(double width, double height, double angle)
 		{
-			Document.AddShape(new Shape2DRectangle(100, 50, 0, "", "", ""));
+			var shape = new Shape2DRectangle(width, height, 0, "", "", "");
+			shape.SetRotation(0,0, MathUtils.DegreeToRad(angle));
+			Document.AddShape(shape);
 		}
 
 		#endregion

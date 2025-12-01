@@ -118,6 +118,7 @@ namespace Axiom.GeoShape.Shapes
 
 			//if (MirrorY)
 			//	result = result.MirrorY();
+			result.ApplyRT(WorldMatrix);
 
 			return result;
 		}

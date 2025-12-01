@@ -44,18 +44,49 @@
 	</Window.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
+			<RowDefinition Height="auto" />
+
 			<RowDefinition />
 			<RowDefinition Height="auto" />
 		</Grid.RowDefinitions>
 
+		<Menu Grid.Row="0" ItemsSource="{Binding Commands}">
+			<Menu.Resources>
+
+				<!--  Template generico per tutti i MenuItem  -->
+				<Style x:Key="DynamicMenuItemStyle" TargetType="MenuItem">
+					<!--  Header: nome della voce  -->
+					<Setter Property="Header" Value="{Binding Title}" />
+
+					<!--  Bambini: se è una categoria vengono mostrati  -->
+					<Setter Property="ItemsSource" Value="{Binding Children}" />
+
+					<!--  Se è un comando finale → associa il comando  -->
+					<Setter Property="Command" Value="{Binding ExecuteCommand}" />
+				</Style>
+
+			</Menu.Resources>
+			<Menu.ItemContainerStyle>
+				<StaticResource ResourceKey="DynamicMenuItemStyle" />
+			</Menu.ItemContainerStyle>
+		</Menu>
+
 		<localCtrl:Viewer2D
-			Grid.Row="0"
+			Grid.Row="1"
+			Padding="8"
 			HorizontalAlignment="Stretch"
 			VerticalAlignment="Stretch"
-			Background="Red"
-			BorderBrush="Green"
-			BorderThickness="10"
-			Document="{Binding Document}" />
-		<ItemsControl Grid.Row="1" ItemsSource="{Binding Commands}" />
+			BorderBrush="#FF9BA7B3"
+			BorderThickness="1"
+			CornerRadius="4"
+			Document="{Binding Document}">
+			<Border.Background>
+				<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+					<GradientStop Offset="0" Color="#FFE6EEF5" />
+					<GradientStop Offset="0.5" Color="#FFD2DEE8" />
+					<GradientStop Offset="1" Color="#FFBCCAD5" />
+				</LinearGradientBrush>
+			</Border.Background>
+		</localCtrl:Viewer2D>
 	</Grid>
 </Window>

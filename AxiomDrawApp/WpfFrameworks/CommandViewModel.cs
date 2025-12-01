@@ -12,7 +12,7 @@ namespace Axiom.WpfFrameworks
 	/// <summary>
 	/// Comando
 	/// </summary>
-	public class CommandViewModel : ObservableObject
+	public class CommandViewModel : ObservableObject, ICommandItem
 	{
 		#region Properties
 

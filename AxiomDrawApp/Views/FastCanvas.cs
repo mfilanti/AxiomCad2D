@@ -30,13 +30,10 @@ namespace AxiomDrawApp.Views
 	public class FastCanvas : Canvas
 	{
 		#region Fields
-
-
 		/// <summary>
 		/// Aggetti visualizzati
 		/// </summary>
 		private Dictionary<string, GraphicElement> _visuals = new();
-
 		
 		#endregion
 
@@ -65,7 +62,6 @@ namespace AxiomDrawApp.Views
 			_visuals.Clear();
 		}
 
-
 		internal void MinMax(out double minX, out double minY, out double maxX, out double maxY)
 		{
 			minX = double.MaxValue;
@@ -86,65 +82,98 @@ namespace AxiomDrawApp.Views
 
 		#region Convert WpfDocument
 
-		public void SetElements(WpfDocument document, Node3D node)
+		/// <summary>
+		/// Aggiunge gli elementi dal nodo specificato
+		/// </summary>
+		public void AddElements(WpfDocument document, Node3D node)
 		{
-			SetElements(document, node.Entities.Values);
+			AddElements(document, node.Entities.Values);
 			foreach (var item in node.Nodes)
 			{
-				SetElements(document, item.Value);
+				AddElements(document, item.Value);
 			}
 		}
 
 		/// <summary>
-		/// Visualizza gli elementi
+		/// Aggiunge gli elementi
 		/// </summary>
-		/// <param name="elements"></param>
-		private void SetElements(WpfDocument document, IEnumerable<Entity3D> elements)
+		public void AddElements(WpfDocument document, IEnumerable<Entity3D> elements)
 		{
 			foreach (var element in elements)
+            {
+                InternalAddElement(document, element);
+            }
+            InvalidateVisual(); // Rende necessario un ridisegno della UI
+		}
+
+
+		public void RemoveEntities(IEnumerable<Entity3D> elements)
+		{
+			foreach (var item in elements)
 			{
-				try
-				{
-					var visual = new DrawingVisual();
-					using (DrawingContext dc = visual.RenderOpen()) // Ottieni il DrawingContext
-					{
-						switch (element)
-						{
-							case Shape2D shape:
-								CreateShape(document, dc, shape);
-
-								break;
-
-							//	CreateLine(dc, line);
-							//case WpfArc arc:
-							//	CreateArc(dc, arc);
-							//	break;
-							//case WpfText text:
-							//	CreateText(dc, visual, text);
-							//	break;
-							//case WpfImage image:
-							//	CreateImage(dc, image);
-							//	break;
-							//case WpfRectangle rectangle:
-							//	CreateRectangle(dc, rectangle);
-							//	break;
-
-							default:
-								break;
-						}
-					}
-
-					_visuals.Add(element.PathId, new GraphicElement(element, visual));
-				}
-				catch
-				{
-
-				}
+				_visuals.Remove(item.PathId);
 			}
 			InvalidateVisual(); // Rende necessario un ridisegno della UI
 		}
 
-		private void CreateShape(WpfDocument document, DrawingContext dc, Shape2D shape)
+		/// <summary>
+		/// Aggiorna le entità
+		/// </summary>
+		public void ChangedElements(WpfDocument document, IEnumerable<Entity3D> elements)
+		{
+			foreach (var item in elements)
+			{
+				_visuals.Remove(item.PathId);
+			}
+			AddElements(document,elements);
+		}
+
+		#endregion
+
+		#region Convert WpfDocument
+
+		private void InternalAddElement(WpfDocument document, Entity3D element)
+        {
+            try
+            {
+                var visual = new DrawingVisual();
+                using (DrawingContext dc = visual.RenderOpen()) // Ottieni il DrawingContext
+                {
+                    switch (element)
+                    {
+                        case Shape2D shape:
+                            CreateShape(document, dc, shape);
+
+                            break;
+
+                        //	CreateLine(dc, line);
+                        //case WpfArc arc:
+                        //	CreateArc(dc, arc);
+                        //	break;
+                        //case WpfText text:
+                        //	CreateText(dc, visual, text);
+                        //	break;
+                        //case WpfImage image:
+                        //	CreateImage(dc, image);
+                        //	break;
+                        //case WpfRectangle rectangle:
+                        //	CreateRectangle(dc, rectangle);
+                        //	break;
+
+                        default:
+                            break;
+                    }
+                }
+
+                _visuals.Add(element.PathId, new GraphicElement(element, visual));
+            }
+            catch
+            {
+
+            }
+        }
+
+        private void CreateShape(WpfDocument document, DrawingContext dc, Shape2D shape)
 		{
 			Figure3D figure = shape.GetFigure();
 			foreach (var curve in figure)
