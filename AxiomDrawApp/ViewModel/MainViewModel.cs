@@ -36,7 +36,10 @@ namespace AxiomDrawApp.ViewModel
 			set => SetProperty(ref _title, value);
 		}
 
-
+		/// <summary>
+		/// VM delle shape
+		/// </summary>
+		public ObservableCollection<ShapeViewModel> Shapes { get; set; } = new();
 		/// <summary>
 		/// Lista di comandi
 		/// </summary>
@@ -94,6 +97,9 @@ namespace AxiomDrawApp.ViewModel
 		{
 			var shape = new Shape2DRectangle(width, height, 0, "", "", "");
 			shape.SetRotation(0,0, MathUtils.DegreeToRad(angle));
+
+			ShapeViewModel shapeViewModel = new(Document, shape);
+			Shapes.Add(shapeViewModel);
 			Document.AddShape(shape);
 		}
 

@@ -45,7 +45,6 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="auto" />
-
 			<RowDefinition />
 			<RowDefinition Height="auto" />
 		</Grid.RowDefinitions>
@@ -88,5 +87,28 @@
 				</LinearGradientBrush>
 			</Border.Background>
 		</localCtrl:Viewer2D>
+		<DataGrid Grid.Row="2" ItemsSource="{Binding Shapes}">
+			<!--  Template dei dettagli della riga  -->
+			<DataGrid.RowDetailsTemplate>
+				<DataTemplate>
+					<DataGrid
+						Margin="0,4,0,4"
+						AutoGenerateColumns="False"
+						HeadersVisibility="Column"
+						ItemsSource="{Binding Parameters}">
+						<DataGrid.Columns>
+							<DataGridTextColumn
+								Binding="{Binding Name}"
+								Header="Nome"
+								IsReadOnly="True" />
+							<DataGridTextColumn Binding="{Binding Value}" Header="Valore" />
+						</DataGrid.Columns>
+					</DataGrid>
+				</DataTemplate>
+			</DataGrid.RowDetailsTemplate>
+			<DataGrid.RowDetailsVisibilityMode>
+				VisibleWhenSelected
+			</DataGrid.RowDetailsVisibilityMode>
+		</DataGrid>
 	</Grid>
 </Window>
